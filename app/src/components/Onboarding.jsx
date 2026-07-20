@@ -6,7 +6,7 @@ import { CURRENCIES, todayStr, addDays } from "../util.js";
 // Trip setup AND the config screen ("Edit trip"): home currency, daily
 // budget (in home money), and one stop per country/city you'll be in —
 // each stop drives currency, weather and the stay card while you're there.
-export default function Onboarding({ existing, onDone, onCancel }) {
+export default function Onboarding({ existing, cloud, onDone, onCancel }) {
   const base = existing || emptyTrip();
   const [homeCurrency, setHomeCurrency] = useState(base.homeCurrency);
   const [dailyBudget, setDailyBudget] = useState(base.dailyBudget ?? "");
@@ -164,8 +164,10 @@ export default function Onboarding({ existing, onDone, onCancel }) {
         )}
       </div>
 
+      {cloud?.enabled && <AccountCard cloud={cloud} />}
+
       <section className="card stack">
-        <span className="label">Backup</span>
+        <span className="label">Backup file</span>
         <p className="tiny">
           Your trip lives on this phone. Export a file to back it up or move it
           to another device — import it there to restore everything.
@@ -198,6 +200,73 @@ export default function Onboarding({ existing, onDone, onCancel }) {
         </p>
       )}
     </div>
+  );
+}
+
+// Passwordless cloud backup: email in, magic link back. No password exists,
+// so there is none to forget, leak, or store.
+function AccountCard({ cloud }) {
+  const [email, setEmail] = useState("");
+  const [sent, setSent] = useState(false);
+  const [err, setErr] = useState(null);
+
+  if (cloud.user)
+    return (
+      <section className="card stack">
+        <span className="label">Cloud backup</span>
+        <p className="small">
+          ✅ Signed in as <strong>{cloud.user.email}</strong> — your trip backs
+          up automatically and follows you to any device you sign in on.
+        </p>
+        <button className="btn btn-ghost" onClick={cloud.signOut}>
+          Sign out
+        </button>
+      </section>
+    );
+
+  return (
+    <section className="card stack">
+      <span className="label">Cloud backup (optional)</span>
+      {sent ? (
+        <p className="small">
+          📬 Check your email — tap the sign-in link and this device is
+          connected. You can close this screen meanwhile.
+        </p>
+      ) : (
+        <>
+          <p className="tiny">
+            Sign in to back up your trip automatically and open it on another
+            device. No password — we email you a link.
+          </p>
+          <div className="row">
+            <input
+              className="grow"
+              type="email"
+              inputMode="email"
+              autoComplete="email"
+              placeholder="you@email.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              aria-label="Email for sign-in link"
+            />
+            <button
+              className="btn-quiet"
+              disabled={!/.+@.+\..+/.test(email)}
+              onClick={() => {
+                setErr(null);
+                cloud
+                  .sendMagicLink(email.trim())
+                  .then(() => setSent(true))
+                  .catch((e) => setErr(e.message || "Couldn't send the link."));
+              }}
+            >
+              Email me a link
+            </button>
+          </div>
+          {err && <p className="tiny" style={{ color: "var(--danger)" }}>{err}</p>}
+        </>
+      )}
+    </section>
   );
 }
 

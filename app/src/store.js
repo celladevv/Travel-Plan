@@ -53,6 +53,10 @@ function migrateV1(old) {
   };
 }
 
+export function getLocalUpdatedAt() {
+  return localStorage.getItem(KEY + ".updatedAt") || null;
+}
+
 export function loadTrip() {
   try {
     const raw = localStorage.getItem(KEY);
@@ -74,8 +78,13 @@ export function useTrip() {
   const [trip, setTrip] = useState(loadTrip);
 
   useEffect(() => {
-    if (trip === null) localStorage.removeItem(KEY);
-    else localStorage.setItem(KEY, JSON.stringify(trip));
+    if (trip === null) {
+      localStorage.removeItem(KEY);
+      localStorage.removeItem(KEY + ".updatedAt");
+    } else {
+      localStorage.setItem(KEY, JSON.stringify(trip));
+      localStorage.setItem(KEY + ".updatedAt", new Date().toISOString());
+    }
   }, [trip]);
 
   const update = (patch) => setTrip((t) => ({ ...t, ...patch }));

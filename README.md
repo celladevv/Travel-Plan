@@ -55,7 +55,24 @@ npm run dev      # http://localhost:5173
 npm run build    # production build in app/dist
 ```
 
-No API keys, no environment variables.
+No API keys, no environment variables — the core app is fully local.
+
+## Cloud backup (optional, Phase B1)
+
+Local-first stays: localStorage is the source of truth and the app works
+with no account. Setting two env vars adds passwordless sign-in (email
+magic link via Supabase) and an automatic cloud copy of the trip:
+
+1. Create a free project at supabase.com.
+2. SQL Editor → paste and run [`supabase/schema.sql`](supabase/schema.sql)
+   (a `trips` table with row-level security — users can only reach their own row).
+3. Authentication → URL Configuration → set Site URL to your deployed URL.
+4. Project Settings → API → copy the URL + anon key into
+   `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY` (locally in `app/.env`,
+   and in Vercel → Project → Settings → Environment Variables), then redeploy.
+
+Without the vars, every cloud surface stays hidden. Phase B2 (planned):
+shared trips — invite a partner, log spends into the same trip.
 
 ## Deploy (free)
 
