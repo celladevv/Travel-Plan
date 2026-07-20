@@ -31,6 +31,40 @@ export default function Onboarding({ existing, onDone, onCancel }) {
 
   const removeStop = (id) => setStops((ss) => ss.filter((s) => s.id !== id));
 
+  // Backup: the trip is one JSON record — export/import is the no-backend
+  // way to move it between devices or keep it safe.
+  const fileRef = useRef(null);
+
+  const exportTrip = () => {
+    const blob = new Blob([JSON.stringify(existing, null, 2)], {
+      type: "application/json",
+    });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `tripmelo-backup-${todayStr()}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const importTrip = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const data = JSON.parse(reader.result);
+        if (!data || !Array.isArray(data.stops) || !data.homeCurrency)
+          throw new Error("not a TripMelo backup");
+        onDone({ ...emptyTrip(), ...data });
+      } catch {
+        alert("That file doesn't look like a TripMelo backup (.json).");
+      }
+    };
+    reader.readAsText(file);
+    e.target.value = "";
+  };
+
   const valid =
     homeCurrency &&
     stops.length > 0 &&
@@ -129,6 +163,34 @@ export default function Onboarding({ existing, onDone, onCancel }) {
           </button>
         )}
       </div>
+
+      <section className="card stack">
+        <span className="label">Backup</span>
+        <p className="tiny">
+          Your trip lives on this phone. Export a file to back it up or move it
+          to another device — import it there to restore everything.
+        </p>
+        <div className="row">
+          {existing && (
+            <button className="btn btn-ghost grow" onClick={exportTrip}>
+              ⬇ Export trip
+            </button>
+          )}
+          <button
+            className="btn btn-ghost grow"
+            onClick={() => fileRef.current?.click()}
+          >
+            ⬆ {existing ? "Import" : "Restore a backup"}
+          </button>
+        </div>
+        <input
+          ref={fileRef}
+          type="file"
+          accept=".json,application/json"
+          style={{ display: "none" }}
+          onChange={importTrip}
+        />
+      </section>
 
       {!existing && (
         <p className="tiny center">
