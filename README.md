@@ -1,6 +1,6 @@
-# 🧭 TripTempo
+# 🧭 TripMelo
 
-**One home for your whole trip — so you stop the scavenger hunt across apps, emails and PDFs, and travel at your own tempo.**
+**One home for your whole trip — so you stop the scavenger hunt across apps, emails and PDFs, and travel to your own melody.**
 
 A PM portfolio project: from a [locked product brief](Calm-Trip-PRD.docx) (working title *Calm Trip*) to a working, installable product. Live app in [`app/`](app/).
 
@@ -77,4 +77,4 @@ On a phone, "Add to Home Screen" installs it as an app (offline-capable, full-sc
 
 ---
 
-*TripTempo (PRD working title: Calm Trip) · Product Brief v0.1 · a PM portfolio project. The earlier AI-planner prototype this repo started as lives in `server.js` / `lib/` and is superseded by this product.*
+*TripMelo (PRD working title: Calm Trip) · Product Brief v0.1 · a PM portfolio project. The earlier AI-planner prototype this repo started as lives in `server.js` / `lib/` and is superseded by this product.*

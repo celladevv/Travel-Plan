@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { riskForPlace, wmoIcon, wmoLabel } from "../api.js";
 import { plannedCostOnDate, spentOnDate, fromHome } from "../store.js";
 import { fmtMoney, fmtDay, todayStr, daysBetween } from "../util.js";
@@ -7,6 +8,7 @@ import { PlaceRow } from "./Plan.jsx";
 // Everything follows the stop you're in — currency, forecast, headline.
 export default function Today({ store, fx, wx, stop, onEditTrip, goTab }) {
   const { trip, update, updatePlace } = store;
+  const [show48, setShow48] = useState(false);
   const today = todayStr();
   const rates = fx?.rates ?? null;
   const home = trip.homeCurrency;
@@ -31,34 +33,24 @@ export default function Today({ store, fx, wx, stop, onEditTrip, goTab }) {
 
   const alert = findAlert(places, wx, trip, leftAfterSpend, rates);
 
-  // Rolling 24-hour window from "now", crossing midnight — plus a 7-day
-  // outlook below it ("will it rain tomorrow?" is a today question too).
-  // Forecast dates are destination-local; across timezones the destination
-  // can already be on the next calendar day, so fall back gracefully.
+  // Rolling hourly window from "now", crossing midnight. 24 hours by
+  // default; "Next 48 hours" extends the same strip in place — same cached
+  // fetch, still works offline. Forecast dates are destination-local;
+  // across timezones the destination can already be on the next calendar
+  // day, so fall back gracefully.
   const allHours = wx?.hours || [];
   const nowHour = new Date().getHours();
   let startIdx = allHours.findIndex(
     (h) => h.date > dayShown || (h.date === dayShown && h.hour >= nowHour)
   );
   if (startIdx === -1 && allHours.length) startIdx = 0;
-  const hoursToShow = startIdx >= 0 ? allHours.slice(startIdx, startIdx + 24) : [];
+  const windowSize = show48 ? 48 : 24;
+  const hoursToShow =
+    startIdx >= 0 ? allHours.slice(startIdx, startIdx + windowSize) : [];
   const tzShifted =
     hoursToShow.length > 0 && hoursToShow[0].date !== dayShown;
   const nowWx =
     !tzShifted && hoursToShow[0]?.hour === nowHour ? hoursToShow[0] : null;
-
-  // Daily outlook derived from the same hourly fetch — no extra API call.
-  const byDate = {};
-  for (const h of allHours) (byDate[h.date] ??= []).push(h);
-  const dailyOutlook = Object.entries(byDate)
-    .map(([date, hs]) => ({
-      date,
-      hi: Math.max(...hs.map((h) => h.temp)),
-      lo: Math.min(...hs.map((h) => h.temp)),
-      pop: Math.max(...hs.map((h) => h.pop ?? 0)),
-      code: (hs.find((h) => h.hour === 13) || hs[Math.floor(hs.length / 2)]).code,
-    }))
-    .slice(0, 7);
 
   const localLeft =
     leftAfterPlans != null && local && local !== home
@@ -144,27 +136,14 @@ export default function Today({ store, fx, wx, stop, onEditTrip, goTab }) {
         ) : (
           <p className="empty">No forecast available — check your connection.</p>
         )}
-        {dailyOutlook.length > 1 && (
-          <div className="list">
-            {dailyOutlook.map((d) => (
-              <div key={d.date} className="list-item row-between">
-                <span className="small" style={{ width: 86 }}>
-                  {d.date === dayShown ? "Today" : fmtDay(d.date)}
-                </span>
-                <span>{wmoIcon(d.code)}</span>
-                <span
-                  className={"small amount " + (d.pop >= 50 ? "" : "muted")}
-                  style={d.pop >= 50 ? { color: "var(--danger)" } : null}
-                >
-                  {d.pop}%
-                </span>
-                <span className="small amount muted">
-                  {d.lo}° <span style={{ opacity: 0.5 }}>/</span>{" "}
-                  <strong style={{ color: "var(--text)" }}>{d.hi}°</strong>
-                </span>
-              </div>
-            ))}
-          </div>
+        {hoursToShow.length > 0 && (
+          <button
+            className="btn-quiet"
+            style={{ width: "100%" }}
+            onClick={() => setShow48((v) => !v)}
+          >
+            {show48 ? "Show less ▴" : "Next 48 hours ▾"}
+          </button>
         )}
         {wx?.stale && <p className="tiny">Offline — showing the last forecast.</p>}
       </section>

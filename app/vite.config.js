@@ -9,8 +9,8 @@ export default defineConfig({
       registerType: "autoUpdate",
       includeAssets: ["icon.svg", "apple-touch-icon.png"],
       manifest: {
-        name: "TripTempo",
-        short_name: "TripTempo",
+        name: "TripMelo",
+        short_name: "TripMelo",
         description:
           "One home for your whole trip — money, itinerary, weather and your stay, together.",
         theme_color: "#4050b5",

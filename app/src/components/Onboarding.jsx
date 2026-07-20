@@ -60,7 +60,7 @@ export default function Onboarding({ existing, onDone, onCancel }) {
       <header className="row" style={{ gap: 12 }}>
         <span className="logo-dot">🧭</span>
         <div>
-          <h1>{existing ? "Trip settings" : "TripTempo"}</h1>
+          <h1>{existing ? "Trip settings" : "TripMelo"}</h1>
           {!existing && (
             <p className="small muted">
               One home for your whole trip. Set it up in a minute.
