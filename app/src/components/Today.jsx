@@ -44,9 +44,8 @@ export default function Today({ store, fx, wx, stop, onEditTrip, goTab }) {
     (h) => h.date > dayShown || (h.date === dayShown && h.hour >= nowHour)
   );
   if (startIdx === -1 && allHours.length) startIdx = 0;
-  const windowSize = show48 ? 48 : 24;
-  const hoursToShow =
-    startIdx >= 0 ? allHours.slice(startIdx, startIdx + windowSize) : [];
+  const hoursToShow = startIdx >= 0 ? allHours.slice(startIdx, startIdx + 24) : [];
+  const next48 = startIdx >= 0 ? allHours.slice(startIdx, startIdx + 48) : [];
   const tzShifted =
     hoursToShow.length > 0 && hoursToShow[0].date !== dayShown;
   const nowWx =
@@ -130,7 +129,7 @@ export default function Today({ store, fx, wx, stop, onEditTrip, goTab }) {
                   {h.hour === 0 ? (
                     <strong>{weekday(h.date)}</strong>
                   ) : (
-                    `${String(h.hour).padStart(2, "0")}:00`
+                    fmtHour(h.hour)
                   )}
                 </div>
                 <div>{wmoIcon(h.code)}</div>
@@ -142,13 +141,13 @@ export default function Today({ store, fx, wx, stop, onEditTrip, goTab }) {
         ) : (
           <p className="empty">No forecast available — check your connection.</p>
         )}
-        {hoursToShow.length > 0 && (
+        {next48.length > 0 && (
           <button
             className="btn-quiet"
             style={{ width: "100%" }}
-            onClick={() => setShow48((v) => !v)}
+            onClick={() => setShow48(true)}
           >
-            {show48 ? "Show less ▴" : "Next 48 hours ▾"}
+            Next 48 hours
           </button>
         )}
         {wx?.stale && <p className="tiny">Offline — showing the last forecast.</p>}
@@ -204,6 +203,15 @@ export default function Today({ store, fx, wx, stop, onEditTrip, goTab }) {
         )}
       </section>
 
+      {show48 && (
+        <HourSheet
+          hours={next48}
+          city={stop?.destination?.name}
+          dayShown={dayShown}
+          onClose={() => setShow48(false)}
+        />
+      )}
+
       <section className="card stack">
         <div className="row-between">
           <span className="label">
@@ -237,6 +245,64 @@ function weekday(dateStr) {
   return new Date(dateStr + "T12:00:00").toLocaleDateString(undefined, {
     weekday: "short",
   });
+}
+
+function fmtHour(h) {
+  const hr = h % 12 === 0 ? 12 : h % 12;
+  return `${hr} ${h < 12 ? "AM" : "PM"}`;
+}
+
+// Full 48-hour view — in-app, from the same cached fetch, works offline.
+function HourSheet({ hours, city, dayShown, onClose }) {
+  const groups = [];
+  for (const h of hours) {
+    const last = groups[groups.length - 1];
+    if (!last || last.date !== h.date) groups.push({ date: h.date, items: [h] });
+    else last.items.push(h);
+  }
+  return (
+    <div className="sheet-back" onClick={onClose}>
+      <div className="sheet stack" onClick={(e) => e.stopPropagation()}>
+        <div className="row-between">
+          <h2>Next 48 hours{city ? ` · ${city}` : ""}</h2>
+          <button className="btn-quiet" onClick={onClose}>
+            Close
+          </button>
+        </div>
+        {groups.map((g) => (
+          <div key={g.date}>
+            <span className="label">
+              {g.date === dayShown ? "Today" : fmtDay(g.date)}
+            </span>
+            <div className="list">
+              {g.items.map((h) => (
+                <div key={h.time} className="list-item row">
+                  <span className="small amount" style={{ width: 52 }}>
+                    {fmtHour(h.hour)}
+                  </span>
+                  <span>{wmoIcon(h.code)}</span>
+                  <span className="small muted grow">{wmoLabel(h.code)}</span>
+                  <span
+                    className="small amount"
+                    style={
+                      (h.pop ?? 0) >= 50
+                        ? { color: "var(--danger)", fontWeight: 700 }
+                        : { color: "var(--text-2)" }
+                    }
+                  >
+                    {h.pop != null ? h.pop + "%" : ""}
+                  </span>
+                  <span className="amount" style={{ width: 36, textAlign: "right" }}>
+                    {h.temp}°
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }
 
 // "Your 15:00 temple is outdoors in a 70% rain window — it costs ~¥1,500,

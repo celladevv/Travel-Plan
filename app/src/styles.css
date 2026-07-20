@@ -2,6 +2,10 @@
 
 /* "Twilight indigo" palette — every text/bg pair measured ≥4.5:1 (WCAG AA) */
 :root {
+  /* Native controls (date-picker icon, select arrows) follow the theme,
+     and their selection highlights use the brand color */
+  color-scheme: light;
+  accent-color: #4050b5;
   --bg: #f4f4f8;
   --surface: #ffffff;
   --surface-2: #ebecf3;
@@ -27,6 +31,8 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
+    color-scheme: dark; /* date icon renders light instead of black */
+    accent-color: #97a7f7;
     --bg: #14161d;
     --surface: #1c1f29;
     --surface-2: #262a38;
@@ -187,7 +193,12 @@ input[type="number"] {
   font-size: inherit;
   padding: 4px;
 }
-input[type="date"], input[type="time"] { min-height: 46px; }
+input[type="date"], input[type="time"] {
+  min-height: 46px;
+  padding-left: 10px;
+  padding-right: 8px;
+  min-width: 0; /* let flex shrink dates instead of cropping them */
+}
 
 /* ---- Buttons ---- */
 

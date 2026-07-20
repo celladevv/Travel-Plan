@@ -104,34 +104,35 @@ export default function Onboarding({ existing, cloud, onDone, onCancel }) {
       </header>
 
       <section className="card stack">
-        <div className="row">
-          <label className="field grow">
-            <span className="label">Your money (totals &amp; budget)</span>
-            <select
-              value={homeCurrency}
-              onChange={(e) => setHomeCurrency(e.target.value)}
-            >
-              {CURRENCIES.map((c) => (
-                <option key={c}>{c}</option>
-              ))}
-            </select>
-          </label>
-          <label className="field grow">
-            <span className="label">Daily budget in {homeCurrency}</span>
-            <input
-              type="number"
-              inputMode="decimal"
-              min="0"
-              value={dailyBudget}
-              onChange={(e) => setDailyBudget(e.target.value)}
-              placeholder="optional"
-            />
-          </label>
-        </div>
+        <label className="field">
+          <span className="label">Your money</span>
+          <select
+            value={homeCurrency}
+            onChange={(e) => setHomeCurrency(e.target.value)}
+          >
+            {CURRENCIES.map((c) => (
+              <option key={c}>{c}</option>
+            ))}
+          </select>
+        </label>
         <p className="tiny">
-          Spends in any currency are totalled in {homeCurrency}. You pick the
-          currency each time you log — it just defaults to where you are.
+          Every total in the app is shown in {homeCurrency}. You can still log
+          each spend in whatever currency the till used.
         </p>
+      </section>
+
+      <section className="card stack">
+        <label className="field">
+          <span className="label">Daily budget in {homeCurrency} (optional)</span>
+          <input
+            type="number"
+            inputMode="decimal"
+            min="0"
+            value={dailyBudget}
+            onChange={(e) => setDailyBudget(e.target.value)}
+            placeholder="what you'd like to spend per day"
+          />
+        </label>
       </section>
 
       {stops.map((s, i) => (
@@ -328,17 +329,30 @@ function StopCard({ stop, index, canRemove, isCurrent, onCurrent, onChange, onRe
         </div>
       </div>
 
-      <label className="field">
-        <span className="label">City</span>
-        <input
-          value={query}
-          onChange={(e) => {
-            setQuery(e.target.value);
-            onChange({ destination: null });
-          }}
-          placeholder="e.g. Tokyo, Ubud, Bangkok"
-        />
-      </label>
+      <div className="row">
+        <label className="field grow">
+          <span className="label">City</span>
+          <input
+            value={query}
+            onChange={(e) => {
+              setQuery(e.target.value);
+              onChange({ destination: null });
+            }}
+            placeholder="e.g. Tokyo, Ubud, Bangkok"
+          />
+        </label>
+        <label className="field" style={{ width: 104 }}>
+          <span className="label">Money</span>
+          <select
+            value={stop.localCurrency}
+            onChange={(e) => onChange({ localCurrency: e.target.value })}
+          >
+            {CURRENCIES.map((c) => (
+              <option key={c}>{c}</option>
+            ))}
+          </select>
+        </label>
+      </div>
       {searching && <p className="tiny">Searching…</p>}
       {results.length > 0 && (
         <div className="suggest">
@@ -372,17 +386,6 @@ function StopCard({ stop, index, canRemove, isCurrent, onCurrent, onChange, onRe
             min={stop.startDate || undefined}
             onChange={(e) => onChange({ endDate: e.target.value })}
           />
-        </label>
-        <label className="field" style={{ width: 92 }}>
-          <span className="label">Money</span>
-          <select
-            value={stop.localCurrency}
-            onChange={(e) => onChange({ localCurrency: e.target.value })}
-          >
-            {CURRENCIES.map((c) => (
-              <option key={c}>{c}</option>
-            ))}
-          </select>
         </label>
       </div>
     </section>
