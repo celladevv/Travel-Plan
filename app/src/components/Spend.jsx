@@ -76,9 +76,13 @@ export default function Spend({ store, fx, stop }) {
         <div className="row-between">
           <div>
             <span className="label">Today</span>
+            {fx === null ? (
+              <div className="skel skel-line" style={{ width: 120, height: 22, margin: "4px 0" }} />
+            ) : (
             <div className="amount" style={{ fontSize: "1.5rem" }}>
               {todaySpent == null ? "—" : fmtMoney(todaySpent, home)}
             </div>
+            )}
             {budget ? (
               <p className="small muted">
                 {todaySpent != null && todaySpent <= budget

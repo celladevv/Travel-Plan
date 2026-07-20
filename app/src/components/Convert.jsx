@@ -105,14 +105,24 @@ export default function Convert({ trip, fx, stop }) {
           </select>
         </div>
 
-        <p className="tiny center">
-          {fx == null
-            ? "Getting live rates…"
-            : rate == null
-              ? "No rate for this pair."
-              : `1 ${from} = ${fmtRate(rate)} ${to}` +
-                (fx.stale ? ` · offline, rates as of ${shortDate(fx.updated)}` : "")}
-        </p>
+        {fx == null ? (
+          <div
+            className="skel skel-line"
+            style={{ width: 150, margin: "0 auto" }}
+            aria-label="Loading rate"
+          />
+        ) : (
+          <p className="tiny center">
+            {fx.error
+              ? "Couldn't get live rates — check your connection."
+              : rate == null
+                ? "No rate for this pair."
+                : `1 ${from} = ${fmtRate(rate)} ${to}` +
+                  (fx.stale
+                    ? ` · offline, rates as of ${shortDate(fx.updated)}`
+                    : "")}
+          </p>
+        )}
       </section>
 
       <section className="stack">

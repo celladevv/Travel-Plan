@@ -113,7 +113,13 @@ export default function Today({ store, fx, wx, stop, onEditTrip, goTab }) {
             </span>
           )}
         </div>
-        {hoursToShow.length ? (
+        {wx === null ? (
+          <div className="hours" aria-label="Loading forecast">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="skel skel-hour" />
+            ))}
+          </div>
+        ) : hoursToShow.length ? (
           <div className="hours">
             {hoursToShow.map((h) => (
               <div
@@ -150,7 +156,12 @@ export default function Today({ store, fx, wx, stop, onEditTrip, goTab }) {
 
       <section className="card stack">
         <span className="label">Money today · in your {home}</span>
-        {budget == null ? (
+        {fx === null ? (
+          <>
+            <div className="skel skel-line" style={{ width: "62%" }} />
+            <div className="skel skel-line" style={{ width: "38%" }} />
+          </>
+        ) : budget == null ? (
           <p className="small muted">
             {spent != null && spent > 0
               ? `Spent ${fmtMoney(spent, home)} today.`

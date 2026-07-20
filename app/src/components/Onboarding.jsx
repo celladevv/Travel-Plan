@@ -166,39 +166,44 @@ export default function Onboarding({ existing, cloud, onDone, onCancel }) {
 
       {cloud?.enabled && <AccountCard cloud={cloud} />}
 
-      <section className="card stack">
-        <span className="label">Backup file</span>
-        <p className="tiny">
-          Your trip lives on this phone. Export a file to back it up or move it
-          to another device — import it there to restore everything.
-        </p>
-        <div className="row">
-          {existing && (
+      {existing ? (
+        <section className="card stack">
+          <span className="label">Backup file</span>
+          <p className="tiny">
+            Your trip lives on this phone. Export a file to back it up or move
+            it to another device — import it there to restore everything.
+          </p>
+          <div className="row">
             <button className="btn btn-ghost grow" onClick={exportTrip}>
               ⬇ Export trip
             </button>
-          )}
-          <button
-            className="btn btn-ghost grow"
-            onClick={() => fileRef.current?.click()}
-          >
-            ⬆ {existing ? "Import" : "Restore a backup"}
-          </button>
-        </div>
-        <input
-          ref={fileRef}
-          type="file"
-          accept=".json,application/json"
-          style={{ display: "none" }}
-          onChange={importTrip}
-        />
-      </section>
-
-      {!existing && (
+            <button
+              className="btn btn-ghost grow"
+              onClick={() => fileRef.current?.click()}
+            >
+              ⬆ Import
+            </button>
+          </div>
+        </section>
+      ) : (
         <p className="tiny center">
           Everything stays on your phone — no account, works offline.
+          <br />
+          <button
+            className="linkish"
+            onClick={() => fileRef.current?.click()}
+          >
+            Have a backup file? Restore it
+          </button>
         </p>
       )}
+      <input
+        ref={fileRef}
+        type="file"
+        accept=".json,application/json"
+        style={{ display: "none" }}
+        onChange={importTrip}
+      />
     </div>
   );
 }

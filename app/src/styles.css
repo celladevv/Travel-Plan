@@ -137,6 +137,56 @@ input, select, textarea {
 }
 input:focus, select:focus, textarea:focus { border-color: var(--brand); }
 ::placeholder { color: var(--text-3); opacity: 1; }
+
+/* Money fields: the ±1 spinner is useless for amounts like 800,000 */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+/* ---- Skeleton loaders (async surfaces: rates, weather) ---- */
+
+.skel {
+  position: relative;
+  overflow: hidden;
+  background: var(--surface-2);
+  border-radius: var(--radius-sm);
+}
+.skel::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.22),
+    transparent
+  );
+  animation: skel-shimmer 1.2s infinite;
+}
+@keyframes skel-shimmer {
+  to { transform: translateX(100%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .skel::after { animation: none; }
+}
+.skel-line { height: 14px; }
+.skel-hour { width: 62px; height: 88px; flex: none; }
+
+.linkish {
+  background: none;
+  color: var(--brand-text);
+  font-weight: 600;
+  text-decoration: underline;
+  font-size: inherit;
+  padding: 4px;
+}
 input[type="date"], input[type="time"] { min-height: 46px; }
 
 /* ---- Buttons ---- */

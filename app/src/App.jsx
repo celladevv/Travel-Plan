@@ -30,12 +30,14 @@ export default function App() {
   const [fx, setFx] = useState(null); // { rates, updated, stale }
   const [wx, setWx] = useState(null); // { hours, fetchedAt, stale }
 
+  // null = loading (skeletons); { error } = failed; { rates } = ready
   useEffect(() => {
     if (!trip) return;
     let on = true;
+    setFx(null);
     getRatesTable(trip.homeCurrency)
       .then((r) => on && setFx(r))
-      .catch(() => on && setFx(null));
+      .catch(() => on && setFx({ error: true }));
     return () => (on = false);
   }, [trip?.homeCurrency]);
 
@@ -45,7 +47,7 @@ export default function App() {
     setWx(null);
     getHourly(stop.destination.lat, stop.destination.lon)
       .then((w) => on && setWx(w))
-      .catch(() => on && setWx(null));
+      .catch(() => on && setWx({ hours: [], error: true }));
     return () => (on = false);
   }, [stop?.destination?.lat, stop?.destination?.lon]);
 
