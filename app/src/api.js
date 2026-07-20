@@ -149,20 +149,25 @@ const WMO = {
 export function wmoLabel(code) {
   return (WMO[code] || ["—", "🌡️"])[0];
 }
-export function wmoIcon(code) {
+// Night-aware: clear/partly-cloudy skies get moon/cloud icons after dark.
+export function wmoIcon(code, isDay = 1) {
+  if (!isDay) {
+    if (code <= 1) return "🌙";
+    if (code === 2) return "☁️";
+  }
   return (WMO[code] || ["—", "🌡️"])[1];
 }
 
 // Returns { hours: [{time:"2026-07-15T14:00", hour:14, date:"2026-07-15",
 //   temp, pop, code}], fetchedAt, stale }
 export async function getHourly(lat, lon) {
-  const key = `ct.weather.${lat.toFixed(2)},${lon.toFixed(2)}`;
+  const key = `ct.weather.v2.${lat.toFixed(2)},${lon.toFixed(2)}`;
   const cached = cacheGet(key, WEATHER_TTL);
   if (cached && !cached.stale) return { ...cached.data, stale: false };
   try {
     const url =
       `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}` +
-      `&hourly=temperature_2m,precipitation_probability,weather_code` +
+      `&hourly=temperature_2m,precipitation_probability,weather_code,is_day` +
       `&forecast_days=7&timezone=auto`;
     const res = await fetch(url);
     const data = await res.json();
@@ -174,6 +179,7 @@ export async function getHourly(lat, lon) {
       temp: Math.round(data.hourly.temperature_2m?.[i] ?? 0),
       pop: data.hourly.precipitation_probability?.[i] ?? null,
       code: data.hourly.weather_code?.[i] ?? 0,
+      isDay: data.hourly.is_day?.[i] ?? 1,
     }));
     const payload = { hours, fetchedAt: Date.now(), tz: data.timezone };
     cacheSet(key, payload);

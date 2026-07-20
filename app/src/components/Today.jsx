@@ -108,7 +108,8 @@ export default function Today({ store, fx, wx, stop, onEditTrip, goTab }) {
           </span>
           {nowWx && (
             <span className="small muted">
-              now {wmoIcon(nowWx.code)} {nowWx.temp}° · {wmoLabel(nowWx.code)}
+              now {wmoIcon(nowWx.code, nowWx.isDay)} {nowWx.temp}° ·{" "}
+              {wmoLabel(nowWx.code)}
             </span>
           )}
         </div>
@@ -132,7 +133,7 @@ export default function Today({ store, fx, wx, stop, onEditTrip, goTab }) {
                     fmtHour(h.hour)
                   )}
                 </div>
-                <div>{wmoIcon(h.code)}</div>
+                <div>{wmoIcon(h.code, h.isDay)}</div>
                 <div className="t">{h.temp}°</div>
                 <div className="p">{h.pop != null ? h.pop + "%" : ""}</div>
               </div>
@@ -280,7 +281,7 @@ function HourSheet({ hours, city, dayShown, onClose }) {
                   <span className="small amount" style={{ width: 52 }}>
                     {fmtHour(h.hour)}
                   </span>
-                  <span>{wmoIcon(h.code)}</span>
+                  <span>{wmoIcon(h.code, h.isDay)}</span>
                   <span className="small muted grow">{wmoLabel(h.code)}</span>
                   <span
                     className="small amount"
