@@ -1,0 +1,425 @@
+/* Calm Trip — mobile-first, calm palette, generous type for at-the-till use */
+
+/* "Twilight indigo" palette — every text/bg pair measured ≥4.5:1 (WCAG AA) */
+:root {
+  --bg: #f4f4f8;
+  --surface: #ffffff;
+  --surface-2: #ebecf3;
+  --text: #1d2030;
+  --text-2: #4d5470;
+  --text-3: #5f6783;
+  --brand: #4050b5;
+  --brand-soft: #e2e5fa;
+  --brand-text: #303c96;
+  --on-brand: #ffffff; /* text on --brand fills */
+  --accent: #a54c07;
+  --accent-soft: #fdeeda;
+  --danger: #b3402f;
+  --danger-soft: #fbe4df;
+  --ok: #35703d;
+  --ok-soft: #e2f0e3;
+  --border: #dddfe9;
+  --shadow: 0 1px 2px rgba(29, 32, 48, 0.05), 0 4px 16px rgba(29, 32, 48, 0.06);
+  --radius: 16px;
+  --radius-sm: 10px;
+  --tabbar-h: calc(60px + env(safe-area-inset-bottom, 0px));
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #14161d;
+    --surface: #1c1f29;
+    --surface-2: #262a38;
+    --text: #edeff5;
+    --text-2: #a9b0c4;
+    --text-3: #8b92a9;
+    --brand: #97a7f7;
+    --brand-soft: #262f5e;
+    --brand-text: #b6c2fb;
+    --on-brand: #101540; /* periwinkle is light — dark text keeps 7.6:1 */
+    --accent: #f0a04f;
+    --accent-soft: #3d2c15;
+    --danger: #e07862;
+    --danger-soft: #40201a;
+    --ok: #7cc184;
+    --ok-soft: #1e3320;
+    --border: #333849;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 4px 16px rgba(0, 0, 0, 0.25);
+  }
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  font-size: 16px;
+}
+
+#root { min-height: 100dvh; }
+
+.app {
+  max-width: 480px;
+  margin: 0 auto;
+  min-height: 100dvh;
+  padding-bottom: var(--tabbar-h);
+}
+
+.screen {
+  padding: 20px 16px 24px;
+  animation: fadein 0.18s ease;
+}
+
+@keyframes fadein {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* ---- Typography ---- */
+
+h1 { font-size: 1.55rem; letter-spacing: -0.02em; }
+h2 { font-size: 1.15rem; letter-spacing: -0.01em; }
+
+.eyebrow {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--brand-text);
+}
+
+.muted { color: var(--text-2); }
+.small { font-size: 0.82rem; }
+.tiny { font-size: 0.72rem; color: var(--text-3); }
+
+/* ---- Cards & layout ---- */
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  box-shadow: var(--shadow);
+}
+
+.stack > * + * { margin-top: 12px; }
+.stack-lg > * + * { margin-top: 20px; }
+.row { display: flex; align-items: center; gap: 10px; }
+.row-between { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.grow { flex: 1; min-width: 0; }
+
+/* ---- Inputs ---- */
+
+label.field { display: block; }
+label.field .label,
+.label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-2);
+  margin-bottom: 6px;
+}
+
+input, select, textarea {
+  width: 100%;
+  font: inherit;
+  color: var(--text);
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+input:focus, select:focus, textarea:focus { border-color: var(--brand); }
+::placeholder { color: var(--text-3); opacity: 1; }
+input[type="date"], input[type="time"] { min-height: 46px; }
+
+/* ---- Buttons ---- */
+
+button {
+  font: inherit;
+  border: none;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 14px 18px;
+  font-weight: 700;
+  font-size: 1rem;
+  background: var(--brand);
+  color: var(--on-brand);
+  transition: transform 0.05s ease, opacity 0.15s;
+}
+.btn:active { transform: scale(0.98); }
+.btn:disabled { opacity: 0.45; cursor: default; }
+.btn-ghost {
+  background: transparent;
+  color: var(--brand-text);
+  border: 1.5px solid var(--border);
+  font-weight: 600;
+}
+.btn-quiet {
+  background: var(--surface-2);
+  color: var(--text-2);
+  font-weight: 600;
+  padding: 10px 14px;
+  width: auto;
+}
+.btn-danger-quiet {
+  background: transparent;
+  color: var(--danger);
+  font-weight: 600;
+  padding: 8px 10px;
+  width: auto;
+  font-size: 0.85rem;
+}
+
+/* ---- Chips ---- */
+
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip {
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  color: var(--text-2);
+  font-size: 0.88rem;
+  font-weight: 600;
+  border: 1.5px solid transparent;
+}
+.chip.on {
+  background: var(--brand-soft);
+  color: var(--brand-text);
+  border-color: var(--brand);
+}
+
+/* ---- Badges ---- */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+.badge-rain { background: var(--danger-soft); color: var(--danger); }
+.badge-ok { background: var(--ok-soft); color: var(--ok); }
+.badge-out { background: var(--accent-soft); color: var(--accent); }
+.badge-in { background: var(--surface-2); color: var(--text-2); }
+
+/* ---- Tab bar ---- */
+
+.tabbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: var(--tabbar-h);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: center;
+  z-index: 40;
+}
+.tabbar-inner {
+  width: 100%;
+  max-width: 480px;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+}
+.tab {
+  background: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--text-3);
+  border-radius: 0;
+}
+.tab .ico { font-size: 1.35rem; line-height: 1.2; }
+.tab.on { color: var(--brand-text); }
+
+/* ---- Converter ---- */
+
+.conv-amount input {
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  padding: 14px 16px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.conv-cur {
+  width: 92px;
+  font-weight: 700;
+  padding: 12px 8px;
+  text-align: center;
+  text-align-last: center;
+}
+.conv-swap {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--brand-soft);
+  color: var(--brand-text);
+  font-size: 1.2rem;
+  flex: none;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ---- Lists ---- */
+
+.list > * + * { border-top: 1px solid var(--border); }
+.list-item { padding: 12px 0; }
+.list-item:first-child { padding-top: 2px; }
+.list-item:last-child { padding-bottom: 2px; }
+
+.amount { font-variant-numeric: tabular-nums; font-weight: 700; }
+
+/* ---- Budget bar ---- */
+
+.bar {
+  height: 8px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  overflow: hidden;
+}
+.bar > div {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--brand);
+  transition: width 0.3s ease;
+}
+.bar.over > div { background: var(--danger); }
+
+/* ---- Hourly weather strip ---- */
+
+.hours {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 4px 2px 8px;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.hours::-webkit-scrollbar { display: none; }
+.hour-card {
+  flex: none;
+  width: 62px;
+  text-align: center;
+  padding: 10px 4px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+}
+.hour-card.wet { background: var(--danger-soft); }
+.hour-card .t { font-weight: 700; font-size: 0.95rem; }
+.hour-card .p { font-size: 0.7rem; color: var(--text-2); }
+
+/* ---- Full-screen overlays (immigration card, sheets) ---- */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  /* Deep indigo in both themes: white = 11.1:1, soft indigo = 8.3:1 (AA/AAA).
+     Never dim with opacity here — blended whites fail contrast. */
+  background: #28308c;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 32px 28px calc(32px + env(safe-area-inset-bottom, 0px));
+  text-align: left;
+}
+.overlay .big { font-size: 1.9rem; font-weight: 800; letter-spacing: -0.02em; }
+.overlay .addr { font-size: 1.35rem; line-height: 1.45; margin-top: 14px; }
+.overlay .sub { color: #d9defa; margin-top: 18px; font-size: 1rem; }
+.overlay .kicker {
+  color: #d9defa;
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+}
+
+.sheet-back {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: rgba(15, 20, 18, 0.45);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+.sheet {
+  width: 100%;
+  max-width: 480px;
+  background: var(--bg);
+  border-radius: 20px 20px 0 0;
+  padding: 20px 16px calc(24px + env(safe-area-inset-bottom, 0px));
+  max-height: 88dvh;
+  overflow-y: auto;
+  animation: sheetup 0.22s ease;
+}
+@keyframes sheetup {
+  from { transform: translateY(40px); opacity: 0.6; }
+  to { transform: none; opacity: 1; }
+}
+
+/* ---- Misc ---- */
+
+.center { text-align: center; }
+.divider { height: 1px; background: var(--border); margin: 16px 0; }
+.logo-dot {
+  display: inline-flex;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: var(--brand);
+  color: #fff;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.05rem;
+}
+.empty {
+  text-align: center;
+  color: var(--text-3);
+  padding: 28px 12px;
+  font-size: 0.92rem;
+}
+.suggest {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: var(--surface);
+}
+.suggest button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 12px 14px;
+  background: none;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.95rem;
+  color: var(--text);
+}
+.suggest button:last-child { border-bottom: none; }
+.suggest button:active { background: var(--surface-2); }
