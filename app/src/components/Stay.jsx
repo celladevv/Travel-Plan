@@ -74,10 +74,16 @@ export default function Stay({ store }) {
               </div>
             </div>
             <div className="row">
-              <button className="btn grow" onClick={() => setShowCard(s)}>
+              <button
+                className="btn btn-ghost grow"
+                onClick={() => setShowCard(s)}
+              >
                 🛂 Show card
               </button>
-              <button className="btn-quiet" onClick={() => setEditing(s)}>
+              <button
+                className="btn btn-ghost grow"
+                onClick={() => setEditing(s)}
+              >
                 Edit
               </button>
             </div>
