@@ -30,7 +30,31 @@ export const emptyTrip = () => ({
   currentStopId: null, // manual "I'm here" override
   places: [], // { id, date, name, time, cost, costCurrency, outdoor, note, done }
   expenses: [], // { id, date, amount, currency, category, note, ts }
+  stays: [], // { id, hotel, address, checkIn, checkOut, note } — a trip can have many
 });
+
+// Older trips kept one stay inside each stop; lift those into the
+// trip-level stays list so multiple stays per city work.
+function normalize(data) {
+  const t = { ...emptyTrip(), ...data };
+  if (!Array.isArray(t.stays)) t.stays = [];
+  if (t.stays.length === 0 && Array.isArray(t.stops)) {
+    for (const s of t.stops) {
+      const st = s.stay;
+      if (st && ((st.hotel || "").trim() || (st.address || "").trim())) {
+        t.stays.push({
+          id: uid(),
+          hotel: st.hotel || "",
+          address: st.address || "",
+          checkIn: st.checkIn || s.startDate || "",
+          checkOut: st.checkOut || s.endDate || "",
+          note: st.note || "",
+        });
+      }
+    }
+  }
+  return t;
+}
 
 function migrateV1(old) {
   const stop = {
@@ -63,13 +87,13 @@ export function getLocalUpdatedAt() {
 export function loadTrip() {
   try {
     const raw = localStorage.getItem(KEY);
-    if (raw) return { ...emptyTrip(), ...JSON.parse(raw) };
+    if (raw) return normalize(JSON.parse(raw));
 
     // Same-shape data under the old name → copy it to the new key, then
     // clean up. (The save-effect refreshes the sync timestamp on next edit.)
     const legacyV2 = localStorage.getItem(LEGACY_V2);
     if (legacyV2) {
-      const data = { ...emptyTrip(), ...JSON.parse(legacyV2) };
+      const data = normalize(JSON.parse(legacyV2));
       localStorage.setItem(KEY, JSON.stringify(data));
       localStorage.removeItem(LEGACY_V2);
       localStorage.removeItem(LEGACY_V2 + ".updatedAt");
@@ -79,7 +103,7 @@ export function loadTrip() {
     // Oldest pre-multi-stop shape → run the v1 migration.
     const oldRaw = localStorage.getItem(LEGACY_V1);
     if (oldRaw) {
-      const migrated = migrateV1(JSON.parse(oldRaw));
+      const migrated = normalize(migrateV1(JSON.parse(oldRaw)));
       localStorage.setItem(KEY, JSON.stringify(migrated));
       localStorage.removeItem(LEGACY_V1);
       return migrated;
@@ -125,6 +149,15 @@ export function useTrip() {
       stops: t.stops.map((s) => (s.id === id ? { ...s, ...patch } : s)),
     }));
 
+  const addStay = (s) => setTrip((t) => ({ ...t, stays: [...t.stays, s] }));
+  const updateStay = (id, patch) =>
+    setTrip((t) => ({
+      ...t,
+      stays: t.stays.map((s) => (s.id === id ? { ...s, ...patch } : s)),
+    }));
+  const removeStay = (id) =>
+    setTrip((t) => ({ ...t, stays: t.stays.filter((s) => s.id !== id) }));
+
   const resetTrip = () => setTrip(null);
 
   return {
@@ -137,6 +170,9 @@ export function useTrip() {
     updatePlace,
     removePlace,
     updateStop,
+    addStay,
+    updateStay,
+    removeStay,
     resetTrip,
   };
 }

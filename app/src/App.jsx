@@ -110,7 +110,7 @@ export default function App() {
     plan: <Plan {...shared} />,
     convert: <Convert trip={trip} fx={fx} stop={stop} />,
     spend: <Spend {...shared} />,
-    stay: <Stay store={store} stop={stop} />,
+    stay: <Stay store={store} />,
   };
 
   return (
