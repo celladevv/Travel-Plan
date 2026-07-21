@@ -88,9 +88,12 @@ On a phone, "Add to Home Screen" installs it as an app (offline-capable, full-sc
 
 ## Roadmap
 
-**Now (shipped):** the five MVP features above.
-**Next:** packing checklist · arrival info (flight no., seat, code — text).
-**Later:** ticket photo · budget-aware getting-around · shared log with a partner · native store listings via Capacitor.
+See **[ROADMAP.md](ROADMAP.md)** for the full phased plan. In short:
+
+- **Now (shipped):** the five MVP features, plus multi-stop trips, any-currency money, and backup file.
+- **B1 — accounts + cloud save:** passwordless sign-in (Supabase magic link) syncing the trip across devices. Client code is built; needs keys (see "Cloud backup" above).
+- **B2 — "join spend":** invite a partner into a shared trip with a live, per-person expense list.
+- **Later:** packing checklist · arrival info · budget-aware getting-around · native store listings via Capacitor.
 
 ---
 
