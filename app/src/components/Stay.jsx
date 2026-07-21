@@ -52,7 +52,7 @@ export default function Stay({ store }) {
       ) : (
         stays.map((s) => (
           <section key={s.id} className="card stack">
-            <div className="row-between">
+            <div className="row-between" style={{ alignItems: "flex-start" }}>
               <div className="grow">
                 <strong>{s.hotel || "Unnamed stay"}</strong>
                 {isCurrent(s) && (
@@ -72,21 +72,41 @@ export default function Stay({ store }) {
                   </div>
                 )}
               </div>
-            </div>
-            <div className="row">
               <button
-                className="btn btn-ghost grow"
-                onClick={() => setShowCard(s)}
-              >
-                🛂 Show card
-              </button>
-              <button
-                className="btn btn-ghost grow"
+                className="btn-quiet"
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 5,
+                  flex: "none",
+                  padding: "7px 12px",
+                  fontSize: "0.85rem",
+                }}
                 onClick={() => setEditing(s)}
+                aria-label={`Edit ${s.hotel || "stay"}`}
               >
+                <svg
+                  width="13"
+                  height="13"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
+                </svg>
                 Edit
               </button>
             </div>
+            <button
+              className="btn btn-ghost"
+              onClick={() => setShowCard(s)}
+            >
+              🛂 Show card
+            </button>
           </section>
         ))
       )}
