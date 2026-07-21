@@ -185,6 +185,31 @@ input[type="number"] {
 .skel-line { height: 14px; }
 .skel-hour { width: 62px; height: 88px; flex: none; }
 
+/* ---- Stay cards: brand periwinkle with dark ink (7.6:1), same in both
+   themes — a deliberate brand moment, like the full-screen card ---- */
+
+.stay-card {
+  background: #97a7f7;
+  border-color: #8091ee;
+  color: #101540;
+}
+.stay-card .muted,
+.stay-card .label {
+  color: #232a5c;
+}
+.stay-card .btn {
+  background: #28308c;
+  color: #ffffff;
+}
+.stay-card .btn-quiet {
+  background: rgba(16, 21, 64, 0.12);
+  color: #101540;
+}
+.stay-card .badge-ok {
+  background: #e2f0e3;
+  color: #35703d;
+}
+
 .linkish {
   background: none;
   color: var(--brand-text);

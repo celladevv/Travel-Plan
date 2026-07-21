@@ -33,6 +33,11 @@ export default function Today({ store, fx, wx, stop, onEditTrip, goTab }) {
 
   const alert = findAlert(places, wx, trip, leftAfterSpend, rates);
 
+  // Where you sleep tonight (checkout day doesn't count).
+  const tonightStay = trip.stays.find(
+    (s) => s.checkIn && s.checkOut && s.checkIn <= today && today < s.checkOut
+  );
+
   // Rolling hourly window from "now", crossing midnight. 24 hours by
   // default; "Next 48 hours" extends the same strip in place — same cached
   // fetch, still works offline. Forecast dates are destination-local;
@@ -143,17 +148,7 @@ export default function Today({ store, fx, wx, stop, onEditTrip, goTab }) {
           <p className="empty">No forecast available — check your connection.</p>
         )}
         {next48.length > 0 && (
-          <button
-            className="btn-quiet"
-            style={{
-              width: "100%",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 6,
-            }}
-            onClick={() => setShow48(true)}
-          >
+          <button className="btn btn-ghost" onClick={() => setShow48(true)}>
             Next 48 hours
             <svg
               width="15"
@@ -172,6 +167,22 @@ export default function Today({ store, fx, wx, stop, onEditTrip, goTab }) {
         )}
         {wx?.stale && <p className="tiny">Offline — showing the last forecast.</p>}
       </section>
+
+      {tonightStay && (
+        <button
+          className="card stay-card row-between"
+          style={{ width: "100%", textAlign: "left" }}
+          onClick={() => goTab("stay")}
+        >
+          <div>
+            <span className="label">Tonight</span>
+            <strong style={{ display: "block", marginTop: 2 }}>
+              🛏 {tonightStay.hotel || tonightStay.address}
+            </strong>
+          </div>
+          <span aria-hidden="true">›</span>
+        </button>
+      )}
 
       <section className="card stack">
         <span className="label">Money today · in your {home}</span>

@@ -14,8 +14,9 @@ export default function Stay({ store }) {
   const [editing, setEditing] = useState(null); // null | "new" | stay
   const [showCard, setShowCard] = useState(null); // stay | null
 
+  // "Tonight" = you sleep there tonight (checkout day doesn't count).
   const isCurrent = (s) =>
-    s.checkIn && s.checkOut && s.checkIn <= today && today <= s.checkOut;
+    s.checkIn && s.checkOut && s.checkIn <= today && today < s.checkOut;
 
   if (showCard)
     return (
@@ -50,7 +51,7 @@ export default function Stay({ store }) {
         </p>
       ) : (
         stays.map((s) => (
-          <section key={s.id} className="card stack">
+          <section key={s.id} className="card stack stay-card">
             <div className="row-between">
               <div className="grow">
                 <strong>{s.hotel || "Unnamed stay"}</strong>
