@@ -6,8 +6,11 @@
 import { useEffect, useState } from "react";
 import { todayStr, uid } from "./util.js";
 
-const KEY = "calm-trip.v2";
-const OLD_KEY = "calm-trip.v1";
+const KEY = "tripmelo.v2";
+// Previous storage names, migrated forward on load so no saved trip is lost
+// across the rename from "Calm Trip" to TripMelo.
+const LEGACY_V2 = "calm-trip.v2"; // same shape, old name
+const LEGACY_V1 = "calm-trip.v1"; // oldest shape (pre multi-stop)
 
 export const emptyStop = () => ({
   id: uid(),
@@ -61,11 +64,24 @@ export function loadTrip() {
   try {
     const raw = localStorage.getItem(KEY);
     if (raw) return { ...emptyTrip(), ...JSON.parse(raw) };
-    const oldRaw = localStorage.getItem(OLD_KEY);
+
+    // Same-shape data under the old name → copy it to the new key, then
+    // clean up. (The save-effect refreshes the sync timestamp on next edit.)
+    const legacyV2 = localStorage.getItem(LEGACY_V2);
+    if (legacyV2) {
+      const data = { ...emptyTrip(), ...JSON.parse(legacyV2) };
+      localStorage.setItem(KEY, JSON.stringify(data));
+      localStorage.removeItem(LEGACY_V2);
+      localStorage.removeItem(LEGACY_V2 + ".updatedAt");
+      return data;
+    }
+
+    // Oldest pre-multi-stop shape → run the v1 migration.
+    const oldRaw = localStorage.getItem(LEGACY_V1);
     if (oldRaw) {
       const migrated = migrateV1(JSON.parse(oldRaw));
       localStorage.setItem(KEY, JSON.stringify(migrated));
-      localStorage.removeItem(OLD_KEY);
+      localStorage.removeItem(LEGACY_V1);
       return migrated;
     }
     return null;

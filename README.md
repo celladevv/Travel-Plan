@@ -2,7 +2,7 @@
 
 **One home for your whole trip — so you stop the scavenger hunt across apps, emails and PDFs, and travel to your own melody.**
 
-A PM portfolio project: from a [locked product brief](Calm-Trip-PRD.docx) (working title *Calm Trip*) to a working, installable product. Live app in [`app/`](app/).
+A PM portfolio project: from a [locked product brief](Trip-PRD.docx) (working title *Calm Trip*) to a working, installable product. Live app in [`app/`](app/).
 
 ---
 
