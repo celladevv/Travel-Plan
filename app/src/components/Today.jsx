@@ -145,10 +145,29 @@ export default function Today({ store, fx, wx, stop, onEditTrip, goTab }) {
         {next48.length > 0 && (
           <button
             className="btn-quiet"
-            style={{ width: "100%" }}
+            style={{
+              width: "100%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 6,
+            }}
             onClick={() => setShow48(true)}
           >
             Next 48 hours
+            <svg
+              width="15"
+              height="15"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
           </button>
         )}
         {wx?.stale && <p className="tiny">Offline — showing the last forecast.</p>}
