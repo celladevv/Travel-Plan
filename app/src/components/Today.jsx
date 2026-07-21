@@ -170,7 +170,7 @@ export default function Today({ store, fx, wx, stop, onEditTrip, goTab }) {
 
       {tonightStay && (
         <button
-          className="card stay-card row-between"
+          className="card row-between"
           style={{ width: "100%", textAlign: "left" }}
           onClick={() => goTab("stay")}
         >

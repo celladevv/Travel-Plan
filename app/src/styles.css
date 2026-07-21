@@ -185,31 +185,6 @@ input[type="number"] {
 .skel-line { height: 14px; }
 .skel-hour { width: 62px; height: 88px; flex: none; }
 
-/* ---- Stay cards: brand periwinkle with dark ink (7.6:1), same in both
-   themes — a deliberate brand moment, like the full-screen card ---- */
-
-.stay-card {
-  background: #97a7f7;
-  border-color: #8091ee;
-  color: #101540;
-}
-.stay-card .muted,
-.stay-card .label {
-  color: #232a5c;
-}
-.stay-card .btn {
-  background: #28308c;
-  color: #ffffff;
-}
-.stay-card .btn-quiet {
-  background: rgba(16, 21, 64, 0.12);
-  color: #101540;
-}
-.stay-card .badge-ok {
-  background: #e2f0e3;
-  color: #35703d;
-}
-
 .linkish {
   background: none;
   color: var(--brand-text);
@@ -427,10 +402,10 @@ button {
   position: fixed;
   inset: 0;
   z-index: 60;
-  /* Deep indigo in both themes: white = 11.1:1, soft indigo = 8.3:1 (AA/AAA).
-     Never dim with opacity here — blended whites fail contrast. */
-  background: #28308c;
-  color: #fff;
+  /* Brand periwinkle with dark ink in both themes: ink = 7.6:1,
+     muted = 5.9:1 (AA+). Never dim with opacity — blends fail contrast. */
+  background: #97a7f7;
+  color: #101540;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -439,9 +414,9 @@ button {
 }
 .overlay .big { font-size: 1.9rem; font-weight: 800; letter-spacing: -0.02em; }
 .overlay .addr { font-size: 1.35rem; line-height: 1.45; margin-top: 14px; }
-.overlay .sub { color: #d9defa; margin-top: 18px; font-size: 1rem; }
+.overlay .sub { color: #232a5c; margin-top: 18px; font-size: 1rem; }
 .overlay .kicker {
-  color: #d9defa;
+  color: #232a5c;
   font-size: 0.85rem;
   letter-spacing: 0.08em;
 }

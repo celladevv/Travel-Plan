@@ -51,7 +51,7 @@ export default function Stay({ store }) {
         </p>
       ) : (
         stays.map((s) => (
-          <section key={s.id} className="card stack stay-card">
+          <section key={s.id} className="card stack">
             <div className="row-between">
               <div className="grow">
                 <strong>{s.hotel || "Unnamed stay"}</strong>
