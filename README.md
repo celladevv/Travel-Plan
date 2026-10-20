@@ -2,7 +2,7 @@
 
 **One home for your whole trip — so you stop the scavenger hunt across apps, emails and PDFs, and travel to your own melody.**
 
-A PM portfolio project: from a [locked product brief](Trip-PRD.docx) (working title *Calm Trip*) to a working, installable product. Live app in [`app/`](app/).
+A PM portfolio project: from a [locked product brief](Trip-PRD.docx) to a working, installable product. Live app in [`app/`](app/).
 
 ---
 
@@ -97,4 +97,4 @@ See **[ROADMAP.md](ROADMAP.md)** for the full phased plan. In short:
 
 ---
 
-*TripMelo (PRD working title: Calm Trip) · Product Brief v0.1 · a PM portfolio project. The earlier AI-planner prototype this repo started as lives in `server.js` / `lib/` and is superseded by this product.*
+*TripMelo · Product Brief v0.1 · a PM portfolio project. The earlier AI-planner prototype this repo started as lives in `server.js` / `lib/` and is superseded by this product.*
